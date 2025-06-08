@@ -1,0 +1,278 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Ticket Booking API",
+        "description": "API для получения информации о мероприятиях и бронирования билетов.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api",
+            "description": "Основной API сервер"
+        }
+    ],
+    "paths": {
+        "/shows": {
+            "get": {
+                "tags": [
+                    "Мероприятия (Shows)"
+                ],
+                "summary": "Получить список всех мероприятий",
+                "operationId": "3805eb3434ca7f3940ce77e1fef967f2",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ со списком мероприятий.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Show #1"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shows/{showId}": {
+            "get": {
+                "tags": [
+                    "Мероприятия (Shows)"
+                ],
+                "summary": "Получить детальную информацию о мероприятии",
+                "description": "Возвращает информацию о конкретном мероприятии и список его событий.",
+                "operationId": "c8ef168616e272983b94f0d257dc884a",
+                "parameters": [
+                    {
+                        "name": "showId",
+                        "in": "path",
+                        "description": "ID мероприятия",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 46
+                                            },
+                                            "showId": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2019-08-22 20:26:38"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Мероприятие не найдено."
+                    }
+                }
+            }
+        },
+        "/shows/{showId}/events/{eventId}/places": {
+            "get": {
+                "tags": [
+                    "События (Events)"
+                ],
+                "summary": "Получить схему зала для события",
+                "description": "Возвращает список всех мест в зале для конкретного события с указанием их доступности.",
+                "operationId": "7282d57120907b00c47bb9e87e61b2ed",
+                "parameters": [
+                    {
+                        "name": "showId",
+                        "in": "path",
+                        "description": "ID мероприятия (для полноты URL)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "eventId",
+                        "in": "path",
+                        "description": "ID события",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ со схемой зала.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "x": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 0
+                                            },
+                                            "y": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 30
+                                            },
+                                            "width": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 20
+                                            },
+                                            "height": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 20
+                                            },
+                                            "is_available": {
+                                                "type": "boolean",
+                                                "example": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Событие не найдено."
+                    }
+                }
+            }
+        },
+        "/shows/{showId}/events/{eventId}/reserve": {
+            "post": {
+                "tags": [
+                    "События (Events)"
+                ],
+                "summary": "Забронировать места на событие",
+                "description": "Отправляет запрос на бронирование выбранных мест для конкретного события от имени покупателя.",
+                "operationId": "96ed16fda32f710d22adeab856ed7479",
+                "parameters": [
+                    {
+                        "name": "showId",
+                        "in": "path",
+                        "description": "ID мероприятия (для полноты URL)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "eventId",
+                        "in": "path",
+                        "description": "ID события",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Данные для бронирования",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "buyer_name",
+                                    "places"
+                                ],
+                                "properties": {
+                                    "buyer_name": {
+                                        "type": "string",
+                                        "example": "Иван Иванов"
+                                    },
+                                    "places": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 101
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное бронирование.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "reservation_id": {
+                                            "type": "string",
+                                            "example": "5d519fe58e3cf"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации (например, не передано имя или места)."
+                    },
+                    "404": {
+                        "description": "Событие не найдено."
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Мероприятия (Shows)",
+            "description": "Мероприятия (Shows)"
+        },
+        {
+            "name": "События (Events)",
+            "description": "События (Events)"
+        }
+    ]
+}
